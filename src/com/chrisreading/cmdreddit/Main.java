@@ -37,7 +37,9 @@ public class Main {
 			LoginView loginV = new LoginView(this);
 			if(loginV.isConnected()) {
 				user = loginV.getUser();
-				System.out.println("Welcome " + loginV.getUser().getUsername() + "!\n");
+				System.out.println("Welcome " + user.getUsername() + "!\n");
+				
+				// TODO: add karma grabber
 			}
 			
 			// now show front page view
