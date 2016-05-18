@@ -3,6 +3,8 @@ package com.chrisreading.cmdreddit.view;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.chrisreading.cmdreddit.Main;
 import com.chrisreading.cmdreddit.util.OpenUtils;
@@ -17,6 +19,7 @@ public class SubredditView extends View {
 
 	public SubredditView(Main main, String sub) {
 		super(main);
+		
 		Submissions subms = new Submissions(main.getRestClient(), main.getUser());
 		List<Submission> submissions = subms.ofSubreddit(sub, SubmissionSort.HOT, -1, 25, null, null, true);
 		
@@ -31,22 +34,30 @@ public class SubredditView extends View {
 			System.out.println("  " + subm.getAuthor() + " | " + subm.getSubreddit());
 		}
 		
-		// TODO: Add more parsing
-		if(scanner.next().startsWith("open")) {
-			if(scanner.next().equals("link")) {
-				Submission subm = submissions.get(scanner.nextInt());
-				try {
-					OpenUtils.openLink(new URL(subm.getURL()));
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}	
-			} else if(scanner.next().equals("comments")) {
-				// show comments
-			} else if(scanner.next().equals("author")) {
-				Submission subm = submissions.get(scanner.nextInt());
-				System.out.println(subm.getAuthor());
+		// don't close scanner
+		do {
+			scanner.nextLine(); // consume last \n
+			String cmd = scanner.nextLine();
+			String[] args = cmd.split("\\s+"); // split the command
+			
+			// now parse
+			if(args[0].equalsIgnoreCase("open")) {
+				// print available options
+				if(args[1].equalsIgnoreCase("link")) {
+					int par = Integer.parseInt(args[2]);
+					
+					// try to open link in browser
+					try {
+						OpenUtils.openLink(new URL(submissions.get(par).getURL()));
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+				} else if(args[1].equalsIgnoreCase("comments")) {
+					int par = Integer.parseInt(args[2]);
+					// TODO: add functionality for viewing comments
+				}
 			}
-		}
+		} while(!scanner.nextLine().equals("exit"));
 	}
 
 }
