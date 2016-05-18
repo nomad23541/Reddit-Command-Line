@@ -33,11 +33,18 @@ public class SubredditView extends View {
 		
 		// TODO: Add more parsing
 		if(scanner.next().startsWith("open")) {
-			Submission subm = submissions.get(scanner.nextInt());
-			try {
-				OpenUtils.openLink(new URL(subm.getURL()));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
+			if(scanner.next().equals("link")) {
+				Submission subm = submissions.get(scanner.nextInt());
+				try {
+					OpenUtils.openLink(new URL(subm.getURL()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}	
+			} else if(scanner.next().equals("comments")) {
+				// show comments
+			} else if(scanner.next().equals("author")) {
+				Submission subm = submissions.get(scanner.nextInt());
+				System.out.println(subm.getAuthor());
 			}
 		}
 	}
