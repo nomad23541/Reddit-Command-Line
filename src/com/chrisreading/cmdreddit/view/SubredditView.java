@@ -3,12 +3,12 @@ package com.chrisreading.cmdreddit.view;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.chrisreading.cmdreddit.Main;
 import com.chrisreading.cmdreddit.util.OpenUtils;
+import com.github.jreddit.entity.Comment;
 import com.github.jreddit.entity.Submission;
+import com.github.jreddit.retrieval.Comments;
 import com.github.jreddit.retrieval.Submissions;
 import com.github.jreddit.retrieval.params.SubmissionSort;
 
@@ -42,19 +42,24 @@ public class SubredditView extends View {
 			
 			// now parse
 			if(args[0].equalsIgnoreCase("open")) {
-				// print available options
-				if(args[1].equalsIgnoreCase("link")) {
-					int par = Integer.parseInt(args[2]);
-					
-					// try to open link in browser
-					try {
-						OpenUtils.openLink(new URL(submissions.get(par).getURL()));
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
+				if(args.length > 1) {
+					if(args[1].equalsIgnoreCase("link")) {
+						int par = Integer.parseInt(args[2]);
+						
+						// try to open link in browser
+						try {
+							OpenUtils.openLink(new URL(submissions.get(par).getURL()));
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
+					} else if(args[1].equalsIgnoreCase("comments")) {
+						int par = Integer.parseInt(args[2]);
+						new CommentsView(main, submissions.get(par));
 					}
-				} else if(args[1].equalsIgnoreCase("comments")) {
-					int par = Integer.parseInt(args[2]);
-					// TODO: add functionality for viewing comments
+				} else {
+					// print available options
+					System.out.println("\nopen link [id] -- Open submission link in a browser.");
+					System.out.println("open comment [id] -- View comments of submission.\n");
 				}
 			}
 		} while(!scanner.nextLine().equals("exit"));
